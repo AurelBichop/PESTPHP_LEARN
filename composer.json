@@ -1,6 +1,7 @@
 {
     "require-dev": {
-        "pestphp/pest": "^2.25"
+        "pestphp/pest": "^2.25",
+        "symfony/var-dumper": "^6.3"
     },
     "autoload": {
         "psr-4": {
@@ -16,5 +17,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "require": {
+        "nikic/fast-route": "^1.3"
     }
 }
