@@ -4,7 +4,7 @@ it('retrieves the correct book 1 data from the book API', function(){
     //ARRANGE
 
     //ACT
-    $response = $this->json(method: 'GET',uri: '/book/1');
+    $response = $this->json(method: 'GET',uri: '/books/1');
 
     //ASSERT
     expect($response->getStatusCode())->toBe(200)
@@ -24,7 +24,7 @@ it('retrieves the correct book 2 data from the book API', function(){
     //ARRANGE
 
     //ACT
-    $response = $this->json(method: 'GET',uri: '/book/2');
+    $response = $this->json(method: 'GET',uri: '/books/2');
 
     //ASSERT
     expect($response->getStatusCode())->toBe(200)
