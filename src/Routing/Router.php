@@ -40,11 +40,13 @@ class Router
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
-
+                $response = new Response('Route not found',Response::HTTP_NOT_FOUND);
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
+
                 // ... 405 Method Not Allowed
+                $response = new Response('Mothod not allowed',Response::HTTP_METHOD_NOT_ALLOWED);
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
