@@ -41,7 +41,7 @@ class BooksController
 //            ];
 //        }
 
-        $book = $this->bookRepository->finById($id);
+        $book = $this->bookRepository->findById($id);
 
         return new Response(json_encode($book), Response::HTTP_OK);
     }
