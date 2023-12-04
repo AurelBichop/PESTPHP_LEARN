@@ -3,19 +3,18 @@
 use App\Http\Request;
 use App\Http\Response;
 
-it('returns a 200 Response object if a valid route exists', function() {
+it('returns a correct Response object', function(string $method, string $path, int $statusCode) {
 
     // ARRANGE
-    $request = Request::create('GET', '/foo');
-    $handler = fn()=>new Response();
+    $request = \App\Http\Request::create($method, $path);
+    $handler = fn() => new Response();
     $routeHandlerResolver = Mockery::mock(\App\Routing\RouterHandlerResolver::class);
     $routeHandlerResolver->shouldReceive('resolve')
         ->andReturn($handler);
-
     $router = new \App\Routing\Router($routeHandlerResolver);
 
     $router->setRoutes([
-        ['GET','/foo', $handler]
+        ['GET', '/foo', $handler]
     ]);
 
     // ACT
@@ -24,51 +23,10 @@ it('returns a 200 Response object if a valid route exists', function() {
     // ASSERT
     expect($response)
         ->toBeInstanceOf(Response::class)
-        ->and($response->getStatusCode())->toBe(Response::HTTP_OK);
+        ->and($response->getStatusCode())->toBe($statusCode);
 
-});
-
-it('returns a 404 Response object if a route does not exist', function() {
-    // ARRANGE
-    $request = Request::create('GET', '/foo');
-    $handler = fn()=>new Response();
-    $routeHandlerResolver = Mockery::mock(\App\Routing\RouterHandlerResolver::class);
-    $routeHandlerResolver->shouldReceive('resolve')
-        ->andReturn($handler);
-
-    $router = new \App\Routing\Router($routeHandlerResolver);
-
-    $router->setRoutes([
-        ['GET','/bar', $handler]
-    ]);
-
-    $response = $router->dispatch($request);
-
-    // ASSERT
-    expect($response)
-        ->toBeInstanceOf(Response::class)
-        ->and($response->getStatusCode())->toBe(Response::HTTP_NOT_FOUND);
-
-});
-
-it('returns a 405 Response object if a not allowed method is used', function() {
-    // ARRANGE
-    $request = Request::create('GET', '/foo');
-    $handler = fn()=>new Response();
-    $routeHandlerResolver = Mockery::mock(\App\Routing\RouterHandlerResolver::class);
-    $routeHandlerResolver->shouldReceive('resolve')
-        ->andReturn($handler);
-
-    $router = new \App\Routing\Router($routeHandlerResolver);
-
-    $router->setRoutes([
-        ['POST','/foo', $handler]
-    ]);
-
-    $response = $router->dispatch($request);
-
-    // ASSERT
-    expect($response)
-        ->toBeInstanceOf(Response::class)
-        ->and($response->getStatusCode())->toBe(Response::HTTP_METHOD_NOT_ALLOWED);
-});
+})->with([
+    '200 OK Response' => ['GET', '/foo', Response::HTTP_OK],
+    '404 Response' => ['GET', '/bar', Response::HTTP_NOT_FOUND],
+    '405 Response' => ['POST', '/foo', Response::HTTP_METHOD_NOT_ALLOWED],
+]);

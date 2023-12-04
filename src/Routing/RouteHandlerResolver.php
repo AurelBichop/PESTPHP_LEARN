@@ -2,7 +2,7 @@
 
 namespace App\Routing;
 
-class RouterHandlerResolver
+class RouteHandlerResolver
 {
 
 }
