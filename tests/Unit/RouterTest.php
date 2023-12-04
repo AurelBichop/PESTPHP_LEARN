@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Request;
 use App\Http\Response;
 
 it('returns a correct Response object', function(string $method, string $path, int $statusCode) {
@@ -8,7 +7,7 @@ it('returns a correct Response object', function(string $method, string $path, i
     // ARRANGE
     $request = \App\Http\Request::create($method, $path);
     $handler = fn() => new Response();
-    $routeHandlerResolver = Mockery::mock(\App\Routing\RouterHandlerResolver::class);
+    $routeHandlerResolver = Mockery::mock(\App\Routing\RouteHandlerResolver::class);
     $routeHandlerResolver->shouldReceive('resolve')
         ->andReturn($handler);
     $router = new \App\Routing\Router($routeHandlerResolver);

@@ -12,7 +12,7 @@ class Router
 {
     private iterable $routes;
 
-    public function __construct(private RouterHandlerResolver $routerHandlerResolver)
+    public function __construct(private RouteHandlerResolver $routeHandlerResolver)
     {
     }
 
@@ -52,7 +52,7 @@ class Router
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                $handler = $this->routerHandlerResolver->resolve($handler);
+                $handler = $this->routeHandlerResolver->resolve($handler);
 
                 $response = $handler(...$vars);
                 // ... call $handler with $vars
