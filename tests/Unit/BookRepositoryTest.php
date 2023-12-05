@@ -1,11 +1,13 @@
 <?php
 
+uses(\Tests\ApiTestCase::class);
+
 it('returns the correct book data by ID',function (){
     // ARRANGE
     $bookId = 999;
+    $connection = $this->container->get(\App\Database\Connection::class);
 
-    $
-    $bookRepository = new \App\Repository\BookRepository();
+    $bookRepository = new \App\Repository\BookRepository($connection);
 
     // ACT
     $foundBook = $bookRepository->findById($bookId);
