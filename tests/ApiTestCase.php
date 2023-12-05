@@ -3,6 +3,7 @@
 namespace Tests;
 
 
+use App\Command\Migrate;
 use App\Http\Kernel;
 use App\Http\Request;
 use App\Http\Response;
@@ -55,5 +56,13 @@ abstract class ApiTestCase extends BaseTestCase
 
         // Return the $response
         return $response;
+    }
+
+
+    public function migrateTestDatabase(): void
+    {
+        $migrate = new Migrate();
+
+        $migrate->execute();
     }
 }
