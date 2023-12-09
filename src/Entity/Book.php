@@ -29,4 +29,9 @@ class Book implements \JsonSerializable
 
          return $vars;
     }
+
+    public function setId(bool|string $id): void
+    {
+        $this->id = $id;
+    }
 }

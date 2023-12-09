@@ -11,6 +11,11 @@ $dsn = $_ENV['DSN'];
 
 $container->add('dsn', new \League\Container\Argument\Literal\StringArgument($dsn));
 $routes = include __DIR__ . '/routes.php';
+$migrationsFolder = dirname(__DIR__).'/migrations';
+$container->add(
+    'migrations_folder',
+    new \League\Container\Argument\Literal\StringArgument($migrationsFolder)
+);
 
 # services
 $container->add(\App\Routing\RouteHandlerResolver::class)

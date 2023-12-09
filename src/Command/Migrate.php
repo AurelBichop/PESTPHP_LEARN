@@ -2,29 +2,62 @@
 
 namespace App\Command;
 
+use App\Database\Connection;
+use App\Database\MigrationInterface;
+use PDOException;
+
 class Migrate implements CommandInterface {
 
+    public function __construct(
+        private Connection $connection,
+        private string $migrationsFolder
+    )
+    {
+    }
 
     public function execute(): void
     {
-        dd('here!');
-
         // Obtain PDO
+        $pdo = $this->connection->getPdo();
 
         // Open a try / catch - need to rollback if failures..no half migrated states
+        try {
 
-        // Begin a transaction
+            // Begin a transaction
+            $pdo->beginTransaction();
 
-        // Loop through files in migrations folder
+            $files = scandir($this->migrationsFolder);
 
-        // Include the file
+            // Loop through files in migrations folder
+            foreach ($files as $file){
 
-        // Check that it is a Migration
+                if($file === '.' || $file === '..'){
+                    continue;
+                }
 
-        // Call up method
+                // Include the file
+                $migration  = include $this->migrationsFolder . '/' . $file;
 
-        // Catch an exception and roll back
+                // Check that it is a Migration
+                if(!$migration instanceof MigrationInterface){
+                    continue;
+                }
 
-        // Throw another exception
+                // Call up method
+                $migration->up($pdo);
+            }
+
+            // Commit transaction
+            $pdo->commit();
+
+            // Catch an exception and roll back
+        }catch (PDOException $exception){
+            //Rollback the transaction
+            if ($pdo->inTransaction()){
+                $pdo->rollBack();
+            }
+            // Throw another exception
+            throw $exception;
+        }
     }
 }
