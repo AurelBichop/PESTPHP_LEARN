@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -30,8 +31,8 @@ class Book implements \JsonSerializable
          return $vars;
     }
 
-    public function setId(bool|string $id): void
-    {
+    public function setId(?int $id): void
+{
         $this->id = $id;
     }
 }
