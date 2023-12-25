@@ -32,4 +32,24 @@ class Response{
         return $this->body;
     }
 
+    public function send(): void
+    {
+        // start output buffering
+        ob_start();
+
+        // send headers
+        foreach ($this->headers as $key => $value) {
+            header("$key: $value"); // e.g. "Content-Type: application/json";
+        }
+
+        // This will actually add the content to the buffer
+        echo $this->body;
+
+        // Flush the buffer, sending the content to the client
+        ob_end_flush();
+    }
+
+    public function getHeaders():array{
+        return $this->headers;
+    }
 }

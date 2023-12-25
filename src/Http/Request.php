@@ -8,15 +8,25 @@ class Request
 {
 
     public function __construct(
-        private readonly array $queryParams, // $_$GET
-        private readonly array $serverVars = [] // $_SERVER
-//        private array $postParams = [],
-//        private array $cookies = [],
-//        private array $files = []
+        private array $queryParams, // $_$GET
+        private array $serverVars = [], // $_SERVER
+        private array $postParams = [], // $_POST
+        private array $cookies = [], // $_COOKIE
+        private array $files = [] // $_FILES
     )
     {
     }
-
+    
+    public static function createFromGlobals(): Request
+    {
+        return new self(
+            $_GET,
+            $_SERVER,
+            $_POST,
+            $_COOKIE,
+            $_FILES
+        );
+    }
     public static function create(
         string $method,
         string $uri,
