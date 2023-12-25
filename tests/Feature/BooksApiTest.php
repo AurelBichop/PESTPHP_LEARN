@@ -1,41 +1,88 @@
 <?php
 
-it('retrieves the correct book 1 data from the book API', function(){
-    //ARRANGE
+use App\Entity\Author;
+use App\Entity\Book;
+use App\Repository\AuthorMapper;
+use App\Repository\BookMapper;
 
-    //ACT
-    $response = $this->json(method: 'GET',uri: '/books/1');
+beforeEach(function() {
+    $this->migrateTestDatabase();
+});
 
-    //ASSERT
-    expect($response->getStatusCode())->toBe(200)
+it('retrieves the correct book data from the books API', function(
+    string $uri,
+    array $bookData,
+    array $authorData
+) {
+    // ARRANGE
+    // Data fixtures
+    // Create Author object
+    $author = Author::create(
+        id: $authorData['id'],
+        name: $authorData['name'],
+        bio: $authorData['bio']
+    );
+
+    // AuthorMapper
+    $authorMapper = new AuthorMapper($this->connection);
+
+    // Save Author
+    $authorMapper->save($author);
+
+    // Create Book object
+    $book = Book::create(
+        id: $bookData['id'],
+        title: $bookData['title'],
+        yearPublished: $bookData['year_published'],
+        author: $author
+    );
+
+    // BookMapper
+    $bookMapper = new BookMapper($this->connection);
+
+    // Save Book
+    $bookMapper->save($book);
+
+    // ACT
+    $response = $this->json(method: 'GET', uri: $uri);
+
+    // ASSERT
+    expect($response->getStatusCode())->toBeInt()->toBe(200)
         ->and($response->getBody())->toMatchJson([
+            'id' => $bookData['id'],
+            'title' => $bookData['title'],
+            'yearPublished' => $bookData['year_published'],
+            'author' => [
+                'id' => $authorData['id'],
+                'name' => $authorData['name'],
+                'bio' => $authorData['bio']
+            ]
+        ]);
+})->with([
+    'book 1' => [
+        'uri' => '/books/1',
+        'book' => [
             'id' => 1,
             'title' => 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            'yearPublished' => 2008,
-            'author' => [
-                'id' => 1,
-                'name' => 'Robert C. Martin',
-                'bio' => 'This is an author'
-            ]
-        ]);
-});
-
-it('retrieves the correct book 2 data from the book API', function(){
-    //ARRANGE
-
-    //ACT
-    $response = $this->json(method: 'GET',uri: '/books/2');
-
-    //ASSERT
-    expect($response->getStatusCode())->toBe(200)
-        ->and($response->getBody())->toMatchJson([
+            'year_published' => 2008,
+        ],
+        'author' => [
+            'id' => 1,
+            'name' => 'Robert C. Martin',
+            'bio' => 'This is an author'
+        ]
+    ],
+    'book 2' => [
+        'uri' => '/books/2',
+        'book' => [
             'id' => 2,
             'title' => 'Refactoring: Improving the Design of Existing Code',
-            'yearPublished' => 1999,
-            'author' => [
-                'id' => 2,
-                'name' => 'Martin Fowler',
-                'bio' => 'Martin\'s bio'
-            ]
-        ]);
-});
+            'year_published' => 1999,
+        ],
+        'author' => [
+            'id' => 2,
+            'name' => 'Martin Fowler',
+            'bio' => 'Martin\'s bio'
+        ],
+    ]
+]);
