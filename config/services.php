@@ -17,6 +17,9 @@ $container->add(
     new \League\Container\Argument\Literal\StringArgument($migrationsFolder)
 );
 
+$jwtSecretKey = $_ENV['JWT_SECRET_KEY'];
+$container->add('jwtSecretKey', new \League\Container\Argument\Literal\StringArgument($jwtSecretKey));
+
 # services
 $container->add(\App\Routing\RouteHandlerResolver::class)
     ->addArguments([$container]);
