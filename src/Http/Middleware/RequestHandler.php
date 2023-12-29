@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface;
 class RequestHandler implements RequestHandlerInterface
 {
     private array $middleware = [
+        JwtAuthenticate::class,
         RouterDispatch::class
     ];
 
